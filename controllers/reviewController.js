@@ -97,12 +97,46 @@ export const updateReview = async (req, res) => {
             // se re asignan los valores a la review con el id mandado campo por campo para poder mandar bien las imagenes
             review.title = title
             review.description = description
-            review.rating = rating
+            review.rating = rating;
 
-            await review.save()
-            res.status(200).json({msg: "Review Updated succesfully"})
+            await review.save();
+            res.status(200).json({msg: "Review Updated succesfully"});
         } catch (error) {
-            return res.status(400).json({msg: error.message})
-        }
+            return res.status(400).json({msg: error.message});
+        };
     });
+};
+
+export const listReviews = async (req, res) => {
+    const product = await Product.findById(req.query.id);
+    const reviews = [];
+    try{
+        for (const reviewState of product.reviews){
+            const review = await Review.findById(reviewState);
+            reviews.push(review);
+        };
+        res.status(200).json({reviews});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    };
+};
+
+export const deleteReview = async (req, res) => {
+    const review = await Review.findById(req.query.id)
+    if(review.owner.toString() !== req.user.id) return res.status(401).json({msg: "unauthorized"})
+    try {
+        if(review.images.length > 0){
+            review.images.forEach(image => {
+                try {
+                    fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+                } catch (error) { 
+                    return res.status(400).json({msg: error.message})
+                }
+            })
+        }
+        await Review.findByIdAndDelete(req.query.id)
+        res.status(200).json({msg: "Review Deleted Succesfully"})
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
 }
