@@ -162,14 +162,11 @@ export const getProduct = async (req, res) =>{
     }
     try {
         if(product.reviews.length > 0){
-            const object = {review: {}, author: {}}
             for(const id of product.reviews){
                 const reviewState = await Review.findById(id)
-                object.review = reviewState
                 const author = await User.findById(reviewState.author)
-                object.author = {_id: author._id, name: author.name}
+                reviews.push({review: reviewState, author: {_id: author._id, name: author.name}})
             }
-            reviews.push(object)
         }
         res.status(200).json({data})
     } catch (error) {
