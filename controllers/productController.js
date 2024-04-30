@@ -1,6 +1,9 @@
 import Product from "../models/Product.js";
+import Review from "../models/Review.js";
+import User from "../models/User.js";
 import multer from "multer";
 import {string} from "../helpers/index.js";
+import {deleteReviewMiddleware} from "../middleware/deleteReview.js";
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 import fs from "fs"
@@ -58,7 +61,9 @@ export const listProducts = async (req, res) =>{
 export const deleteProduct = async (req, res) =>{
     if(req.user.id !== "657e27e9eda9aad0d5ecf923") return res.status(401).json({msg: "unauthorized"})
     const _id = req.query.id
-    const product = await Product.findById({_id}) 
+    const product = await Product.findById({_id})
+    if (!product) return res.status(404).json({ msg: "The Product Doesn't Exist" })
+
     try {
         if(product.images.length > 0){
             product.images.forEach(image => {
@@ -69,6 +74,11 @@ export const deleteProduct = async (req, res) =>{
                 }
             });
         }
+        if(product.reviews.length > 0){
+            for (const review of product.reviews) {
+                await deleteReviewMiddleware(review.toString());
+            };
+        };
         await Product.findByIdAndDelete({_id})
         res.status(200).json({msg: "Product Deleted Succesfully"})
     } catch (error) {
@@ -102,6 +112,7 @@ export const updateProduct = async (req, res) => {
 
         const {name, description, price, discount, stock} = JSON.parse(req.body.data);
         const product = await Product.findById({_id})
+        if (!product) return res.status(404).json({ msg: "The Product Doesn't Exist" })
 
         try {
 
@@ -139,4 +150,29 @@ export const updateProduct = async (req, res) => {
         }
     });
 
+}
+
+export const getProduct = async (req, res) =>{
+    const product = await Product.findById(req.query.id)
+    if (!product) return res.status(404).json({ msg: "The Product Doesn't Exist" })
+    const reviews = []
+    const data = {
+        product,
+        reviews
+    }
+    try {
+        if(product.reviews.length > 0){
+            const object = {review: {}, author: {}}
+            for(const id of product.reviews){
+                const reviewState = await Review.findById(id)
+                object.review = reviewState
+                const author = await User.findById(reviewState.author)
+                object.author = {_id: author._id, name: author.name}
+            }
+            reviews.push(object)
+        }
+        res.status(200).json({data})
+    } catch (error) {
+        return res.status(400).json({msg: error.message})
+    }
 }

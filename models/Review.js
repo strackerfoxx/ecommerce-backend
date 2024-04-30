@@ -15,12 +15,12 @@ const ReviewSchema = new Schema({
         trim: true,
         required: true
     },
-    product:{
+    product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
         default: null
     },
-    owner:{
+    author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null

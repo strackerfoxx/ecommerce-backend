@@ -6,6 +6,8 @@ import routerProducts from "./routes/products.js"
 import routerCart from "./routes/cart.js"
 import routerReviews from "./routes/reviews.js"
 
+import cors from "cors"
+
 // crear el servidor
 const app = express()
 
@@ -14,6 +16,13 @@ conectarDB();
 
 // puerto de la app
 const port = process.env.PORT || 4000;
+
+const corsOptions = {
+    origin: function(origin, callback){
+            callback(null, true) 
+    }
+}
+app.use(cors(corsOptions))
 
 // habilitar leer los valores de un body
 app.use( express.json() )
