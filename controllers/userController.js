@@ -1,4 +1,7 @@
 import User from "../models/User.js";
+import Cart from "../models/Cart.js";
+import FavoriteList from "../models/FavoriteList.js";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
@@ -22,6 +25,9 @@ export const newUser = async (req, res)  => {
 
         // crear usuario
         await user.save();
+        await Cart.create({owner: user._id});
+        await FavoriteList.create({owner: user._id});
+
         res.json({msg: "User Created Successfully"});
     } catch (error) {
         res.status(401).json({msg: error.message});

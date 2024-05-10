@@ -10,9 +10,8 @@ export const addCart = async (req, res) => {
     
     // si no existe un carrito con este propietario se crea uno
     if(!cart){
-        cart = new Cart();
         try {
-            cart.owner = user;
+            cart = new Cart.create({owner: user});
             cart.save();
         } catch (error) {
             res.status(400).json({msg: error.message})
@@ -40,6 +39,7 @@ export const addCart = async (req, res) => {
                 productToAdd.product = productState;
                 productToAdd.quantity = product.quantity;
                 await productToAdd.save()
+                
             } catch (error) {
                 res.status(400).json({msg: error.message})
             }
@@ -54,7 +54,8 @@ export const addCart = async (req, res) => {
         pushProduct(productToAdd)
     };
 
-    res.status(200).json({msg: "productos agregados correctamente"})
+    res.status(200).json({msg: "products added to cart successfuly"})
+    
 }
 
 export const getCart = async (req, res) => {

@@ -4,6 +4,7 @@ import routerUsers from "./routes/users.js"
 import routerProducts from "./routes/products.js"
 
 import routerCart from "./routes/cart.js"
+import routerFavorite from "./routes/favorite.js"
 import routerReviews from "./routes/reviews.js"
 
 import cors from "cors"
@@ -32,6 +33,7 @@ app.use("/api/users", routerUsers )
 app.use("/api/products", routerProducts )
 
 app.use("/api/cart", routerCart )
+app.use("/api/favorite", routerFavorite )
 app.use("/api/reviews", routerReviews )
 
 // arrancar app

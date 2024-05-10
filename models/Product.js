@@ -35,6 +35,11 @@ const ProductsSchema = new Schema({
         type: Boolean,
         default: true
     },
+    category: {
+        type: String,
+        trim: true,
+        required: true
+    },
     reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,

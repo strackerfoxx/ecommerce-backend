@@ -12,7 +12,8 @@ const CartSchema = new Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        default: null
+        default: null,
+        required: true
     },
 });
 
