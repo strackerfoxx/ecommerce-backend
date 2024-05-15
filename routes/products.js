@@ -9,7 +9,7 @@ router.get("/getimages", getImages)
 router.get("/getone", getProduct)
 router.post("/create", auth, createProduct)
 router.get("/", listProducts)
-router.get("/", listCategoryProducts)
+router.get("/category", listCategoryProducts)
 router.delete("/", auth, deleteProduct)
 router.put("/update", auth, updateProduct)
 
