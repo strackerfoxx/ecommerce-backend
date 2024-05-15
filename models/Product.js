@@ -40,6 +40,15 @@ const ProductsSchema = new Schema({
         trim: true,
         required: true
     },
+    brand: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    colors: [{
+        type: String,
+        trim: true
+    }],
     reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,

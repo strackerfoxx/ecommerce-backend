@@ -58,6 +58,15 @@ export const listProducts = async (req, res) =>{
     }
 }
 
+export const listCategoryProducts = async (req, res) =>{
+    try {
+        const products = await Product.find()
+        return res.status(200).json(products)
+    } catch (error) {
+        return res.status(400).json({msg: error.message})
+    }
+}
+
 export const deleteProduct = async (req, res) =>{
     if(req.user.id !== "657e27e9eda9aad0d5ecf923") return res.status(401).json({msg: "unauthorized"})
     const _id = req.query.id
