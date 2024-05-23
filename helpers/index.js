@@ -10,11 +10,10 @@ export function string(longitud) {
   }
 export function validatePass(password){
     const prePass = password.split("")
-    if(!prePass.includes("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z") 
-    && passwordSparate.includes("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ) 
-    && passwordSparate.includes("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")){
-        return "La contraseña debe tener al menos una mayuscula una minuscula y un numero"
+    if(!prePass.split("").some(char => char.match(/[A-Z]/)) || !prePass.split("").some(char => char.match(/[a-z]/)) || !prePass.split("").some(char => char.match(/[0-9]/))){
+      return "the password must contain at least one uppercase letter, one lowercase letter and one number"
     }
+    
     return "Success"
 }
 export function genJWT(id){

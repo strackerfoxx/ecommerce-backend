@@ -14,6 +14,11 @@ const usuariosSchema = new Schema({
         required: true,
         trim: true
     },
+    auth : {
+        type: Boolean,
+        default: false,
+        trim: true
+    },
     password : {
         type: String,
         required: true,
