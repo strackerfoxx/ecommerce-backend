@@ -11,6 +11,7 @@ const login = async (email, password, res, next) => {
 
     // verificar password y autenticar usuario
     if(!bcrypt.compareSync(password, user.password))return res.status(401).json({msg: "The Password is Incorrect"});
+    
 
     // Crear JWT
     const token = jwt.sign({

@@ -14,7 +14,13 @@ export const newUser = async (req, res, next)  => {
     const { email, password } = req.body;
     
     // validar si el usuario ya existe
-    if(await User.findOne({ email })) return res.status(400).json({msg: "The User ALREADY Exist"});
+    const userExist = await User.findOne({ email });
+    if(userExist?.auth){
+        loginMiddleware(email, password, res, next);
+        return;
+    }else if(userExist){
+        return res.status(400).json({msg: "The User ALREADY Exist"});
+    }
 
     // crear nuevo usuario
     const user = new User(req.body);
