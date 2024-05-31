@@ -7,6 +7,11 @@ const ProductInCartSchema = new Schema({
         ref: "Product",
         default: null
     },
+    color: {
+        type: String,
+        trim: true,
+        required: true
+    },
     quantity: {
         type: Number,
         trim: true,

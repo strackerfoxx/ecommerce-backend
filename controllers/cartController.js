@@ -38,23 +38,45 @@ export const addCart = async (req, res) => {
             try {
                 productToAdd.product = productState;
                 productToAdd.quantity = product.quantity;
+                productToAdd.color = product.color;
                 await productToAdd.save()
-                
+                pushProduct(productToAdd)
+
+                res.status(200).json({msg: "products added to cart successfuly"})
             } catch (error) {
                 res.status(400).json({msg: error.message})
             }
         }else{
-            try {
-                productToAdd.quantity = product.quantity;
-                await productToAdd.save()
-            } catch (error) {
-                res.status(400).json({msg: error.message})
+            // si este producto ya existe en el carrito se actualiza la cantidad
+            if(productToAdd.color === product.color){
+                try {
+                    productToAdd.quantity = product.quantity;
+                    await productToAdd.save()
+                    pushProduct(productToAdd)
+
+                    res.status(200).json({msg: "product quantity updated successfuly"})
+                } catch (error) {
+                    res.status(400).json({msg: error.message})
+                }
+            }else{
+                productToAdd = new ProductInCart();
+                try {
+                    productToAdd.product = productState;
+                    productToAdd.quantity = product.quantity;
+                    productToAdd.color = product.color;
+                    await productToAdd.save()
+                    pushProduct(productToAdd)
+                    
+                    res.status(200).json({msg: "products added to cart successfuly"})
+                } catch (error) {
+                    res.status(400).json({msg: error.message})
+                }
             }
         }
-        pushProduct(productToAdd)
+        
     };
 
-    res.status(200).json({msg: "products added to cart successfuly"})
+    
     
 }
 
