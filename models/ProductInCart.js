@@ -9,8 +9,7 @@ const ProductInCartSchema = new Schema({
     },
     color: {
         type: String,
-        trim: true,
-        required: true
+        trim: true
     },
     quantity: {
         type: Number,

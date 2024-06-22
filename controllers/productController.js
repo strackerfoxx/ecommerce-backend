@@ -33,16 +33,20 @@ export const createProduct = async (req, res) => {
         // El codigo de abajo funciona y ha sido comprobado decenas de veces em dias diferentes, tal parece que no funciona fuera de esta funcion,
         // asi que si no obtienes el json del form-data intenta recibirlo desde aqui
 
-        const data = JSON.parse(req.body.data);
-        const product = new Product(data)
-
+        
         try {
+            const data = JSON.parse(req.body.data);
+            const product = new Product(data)
+            
             names.forEach(name => {
                 product.images.push(name)
             });
             await product.save()
             res.status(200).json({ msg: "Product created succesfully" })
         } catch (error) {
+            names.forEach(image => {
+                fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+            });
             return res.status(400).json({ msg: error.message })
         }
     });
@@ -177,7 +181,7 @@ export const getProduct = async (req, res) => {
                 reviews.push({ review: reviewState, author: { _id: author._id, name: author.name } })
             }
         }
-        res.status(200).json({ data })
+        res.status(200).json(data)
     } catch (error) {
         return res.status(400).json({ msg: error.message })
     }
