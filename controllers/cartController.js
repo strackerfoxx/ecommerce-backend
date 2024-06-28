@@ -48,26 +48,34 @@ export const addCart = async (req, res) => {
         }
     }else{
         // si este producto ya existe en el carrito se actualiza la cantidad
-        if(productToAdd.color === product.color){
-            try {
-                productToAdd.quantity = product.quantity;
-                await productToAdd.save()
-                pushProduct(productToAdd)
-
-                res.status(200).json({msg: "product quantity updated successfuly"})
-            } catch (error) {
-                res.status(400).json({msg: error.message})
+        if(productState.colors.length > 0){
+            if(productToAdd.color === product.color){
+                try {
+                    productToAdd.quantity = product.quantity;
+                    await productToAdd.save()
+                    res.status(200).json({msg: "product quantity updated successfuly"})
+                } catch (error) {
+                    res.status(400).json({msg: error.message})
+                }
+            }else{
+                productToAdd = new ProductInCart();
+                try {
+                    productToAdd.product = productState;
+                    productToAdd.quantity = product.quantity;
+                    productToAdd.color = product.color;
+                    await productToAdd.save()
+                    pushProduct(productToAdd)
+                    
+                    res.status(200).json({msg: "products added to cart successfuly"})
+                } catch (error) {
+                    res.status(400).json({msg: error.message})
+                }
             }
         }else{
-            productToAdd = new ProductInCart();
             try {
-                productToAdd.product = productState;
                 productToAdd.quantity = product.quantity;
-                productToAdd.color = product.color;
                 await productToAdd.save()
-                pushProduct(productToAdd)
-                
-                res.status(200).json({msg: "products added to cart successfuly"})
+                res.status(200).json({msg: "product quantity updated successfuly"})
             } catch (error) {
                 res.status(400).json({msg: error.message})
             }
@@ -98,13 +106,16 @@ export const getCart = async (req, res) => {
 export const removeFromCart = async (req, res) => {
     const owner = req.user.id
     const cart = await Cart.findOne({owner})
-    await ProductInCart.findByIdAndDelete(req.body.id)
     const cartState = []
-
-    for (const product of cart.products) {
-       if(product != req.body.id){
-           cartState.push(product)
-       }
+    
+    if(cart.products.length > 0){
+        for (const product of cart.products) {
+            if(product.toString() !== req.query.id){
+                cartState.push(product)
+            }else{
+                await ProductInCart.findByIdAndDelete(product)
+            }
+         }
     }
     try {
         cart.products = cartState;
@@ -112,5 +123,21 @@ export const removeFromCart = async (req, res) => {
         res.status(200).json({msg: "product removed successfuly"})
     } catch (error) {
         res.status(400).json({msg: error.message});
+    }
+}
+
+export const clearCart = async (req, res) => {
+    const owner = req.user.id
+    const cart = await Cart.findOne({owner})
+    const cartState = []
+    try {
+        for (const productInCart of cart.products) {
+            await ProductInCart.findByIdAndDelete(productInCart)
+        }
+        cart.products = cartState
+        await cart.save()
+        res.status(200).json({msg: "cart cleared successfuly"})
+    } catch (error) {
+        res.status(400).json({msg: error.message})
     }
 }

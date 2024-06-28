@@ -76,7 +76,7 @@ export const getUser = async (req, res) => {
         for (const id of cart.products) {
             const productState = await ProductInCart.findById(id)
             const product = await Product.findById(productState.product)
-            cartState.products.push({product, quantity: productState.quantity, color: productState.color})
+            cartState.products.push({product, quantity: productState.quantity, color: productState.color, productId: productState._id})
         }
     }
     if(favoriteList.products.length > 0){

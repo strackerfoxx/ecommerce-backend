@@ -10,7 +10,7 @@ const auth = async (req, res, next) => {
         const user = jwt.verify(token, process.env.SECRET_KEY);
         req.user = user
     } catch (error) {
-        return res.status(401).json({msg: error.message});
+        return res.status(401).json({msg: "401 Unauthorized"});
     };
     return next();
 }
