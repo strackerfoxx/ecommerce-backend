@@ -5,7 +5,7 @@ import {addCart, getCart, removeFromCart, clearCart} from "../controllers/cartCo
 
 router.post("/add", auth, addCart)
 router.get("/", auth, getCart)
-router.delete("/remove", auth, removeFromCart)
+router.post("/remove", auth, removeFromCart)
 router.delete("/clear", auth, clearCart)
 
 export default router 

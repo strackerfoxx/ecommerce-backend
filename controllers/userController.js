@@ -85,5 +85,5 @@ export const getUser = async (req, res) => {
             favoriteListState.products.push(product)
         }
     }
-    res.status(200).json({cart: cartState, favoriteList, reviews});
+    res.status(200).json({cart: cartState, favoriteListState, reviews});
 }
