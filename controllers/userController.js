@@ -47,7 +47,10 @@ export const newUser = async (req, res, next)  => {
 
 export const login = async (req, res, next) =>  {
     const { email, password } = req.body;
-    loginMiddleware(email, password, res, next);
+    const user = await User.findOne({email})
+    if(!user) return res.status(404).json({msg: "The User Doesn't Exist"});
+
+    loginMiddleware(user, password, res, next);
 }
 
 export const getUser = async (req, res) => {
@@ -85,5 +88,5 @@ export const getUser = async (req, res) => {
             favoriteListState.products.push(product)
         }
     }
-    res.status(200).json({cart: cartState, favoriteListState, reviews});
+    res.status(200).json({cart: cartState, favoriteList: favoriteListState, reviews});
 }

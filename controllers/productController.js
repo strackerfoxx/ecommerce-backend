@@ -99,7 +99,7 @@ export const deleteProduct = async (req, res) => {
     }
 }
 
-export const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res, next) => {
     if (req.user.id !== process.env.ADMIN_ID) return res.status(401).json({ msg: "unauthorized" })
     const _id = req.query.id;
     const names = [];
@@ -123,7 +123,7 @@ export const updateProduct = async (req, res) => {
     upload(req, res, async (err) => {
         if (err) return res.json({ msg: err });
 
-        const { name, description, price, discount, stock } = JSON.parse(req.body.data);
+        const { name, description, price, discount, stock, brand, category, colors } = JSON.parse(req.body.data);
         const product = await Product.findById({ _id })
         if (!product) return res.status(404).json({ msg: "The Product Doesn't Exist" })
 
@@ -136,7 +136,8 @@ export const updateProduct = async (req, res) => {
                     try {
                         fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
                     } catch (error) {
-                        return res.status(400).json({ msg: error.message })
+                        res.status(400).json({ msg: error.message })
+                        return next();
                     }
                 });
 
@@ -154,6 +155,9 @@ export const updateProduct = async (req, res) => {
             product.price = price
             product.discount = discount
             product.stock = stock
+            product.brand = brand
+            product.category = category
+            product.colors = colors
 
             await product.save()
             res.status(200).json({ msg: "Product Updated succesfully" })
