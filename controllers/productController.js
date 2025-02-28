@@ -16,7 +16,7 @@ export const createProduct = async (req, res) => {
         limits: { fileSize: 1000000 * 5 },
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "./uploads")
+                cb(null, "./public")
             },
             filename: (req, file, cb) => {
                 const name = `${string(20)}.jpeg`
@@ -45,7 +45,7 @@ export const createProduct = async (req, res) => {
             res.status(200).json({ msg: "Product created succesfully" })
         } catch (error) {
             names.forEach(image => {
-                fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+                fs.unlinkSync(`./public/${image.split("=")[1]}`);
             });
             return res.status(400).json({ msg: error.message })
         }
@@ -81,7 +81,7 @@ export const deleteProduct = async (req, res) => {
         if (product.images.length > 0) {
             product.images.forEach(image => {
                 try {
-                    fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+                    fs.unlinkSync(`./public/${image.split("=")[1]}`);
                 } catch (error) {
                     return res.status(400).json({ msg: error.message })
                 }
@@ -108,7 +108,7 @@ export const updateProduct = async (req, res, next) => {
         limits: { fileSize: 1000000 * 5 },
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "./uploads")
+                cb(null, "./public")
             },
             filename: (req, file, cb) => {
                 const name = `${string(20)}.jpeg`
@@ -134,7 +134,7 @@ export const updateProduct = async (req, res, next) => {
 
                 product.images.forEach(image => {
                     try {
-                        fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+                        fs.unlinkSync(`./public/${image.split("=")[1]}`);
                     } catch (error) {
                         res.status(400).json({ msg: error.message })
                         return next();

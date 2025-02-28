@@ -14,7 +14,7 @@ export const createReview = async (req, res) => {
         limits: { fileSize: 1000000 * 5 },
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "./uploads")
+                cb(null, "./public")
             },
             filename: (req, file, cb) => {
                 const name = `${string(20)}.jpeg`
@@ -60,7 +60,7 @@ export const updateReview = async (req, res) => {
         limits: { fileSize: 1000000 * 5 },
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "./uploads")
+                cb(null, "./public")
             },
             filename: (req, file, cb) => {
                 const name = `${string(20)}.jpeg`
@@ -83,7 +83,7 @@ export const updateReview = async (req, res) => {
 
                 review.images.forEach(image => {
                     try {
-                        fs.unlinkSync(`./uploads/${image.split("=")[1]}`);
+                        fs.unlinkSync(`./public/${image.split("=")[1]}`);
                     } catch (error) {
                         return res.status(400).json({ msg: error.message })
                     }
